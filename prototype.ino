@@ -4,6 +4,10 @@
 
 void setup() {
 
+    Serial.begin(9600);
+    Mouse.begin();
+
+
     
 }
 
