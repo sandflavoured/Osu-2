@@ -1,6 +1,9 @@
 #include <Mouse.h>
 
 
+int V_horizontal = 0;
+int V_vertical = 0;
+
 
 void setup() {
 
@@ -13,5 +16,16 @@ void setup() {
 
 
 void loop() {
+
+    // Read from sensor
+    V_horizontal = analogRead(A0);
+    V_vertical = analogRead(A1);
+
+    // Find current mouse position
+    
+
+    // Move mouse
+    Mouse.move();
+
 
 }
