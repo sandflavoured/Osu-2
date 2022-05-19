@@ -2,7 +2,7 @@
 
 
 //! set screen resolution here
-screenRes[2] = {2240, 1400};
+int screenRes[2] = {2240, 1400};
 
 
 // Global definitions
@@ -72,6 +72,7 @@ void calibration() {
     }
 
     Serial.println("START");
+    delay(1000);
     Serial.println("Look at the red dot, then blink twice.");
 
 
