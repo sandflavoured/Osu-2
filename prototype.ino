@@ -1,16 +1,19 @@
 #include <Mouse.h>
 
 
+//! set screen resolution here
 screenRes[2] = {2240, 1400};
 
 
+// Global definitions
 
-enum blink_t {
+typedef enum {
     BLINK = 0,
     BLINKBLINK,
     LONGBLINK
-}
+} blink_t;
 
+// ================== Setup ==================
 
 void setup() {
 
@@ -18,34 +21,39 @@ void setup() {
     Mouse.begin();
 
     // run calibration
+    //calibration();
 
-    
-
-
-    calibration();
-
-
+    Mouse.move(90,90,0);
 
     
 }
 
+// ================== Loop ==================
 
 void loop() {
 
-    // Read from sensor
-    V_horizontal = analogRead(A0);
-    V_vertical = analogRead(A1);
+    // // Read from sensor
+    // V_horizontal = analogRead(A0);
+    // V_vertical = analogRead(A1);
 
-    // Find current mouse position
-        
+    // // Center mouse (every so often)
+    // //centerMouse();
 
-    // Move mouse
-    Mouse.move();
+    // // Move mouse
+    // xMove = 0;
+    // yMove = 0;
+    // Mouse.move(xMove, yMove);
+
+    // if (clicked()) {
+    //     Mouse.click();
+    // }
 
 
 }
 
 
+
+// ================== Functions ==================
 
 void calibration() {
     
@@ -94,3 +102,4 @@ int *readSignal() {
     
     return vals;
 }
+
