@@ -6,12 +6,7 @@ int *sig_vol;
 
 void setup() {
 
-    Serial.begin(9600);
-
-
-    // run calibration
-    //calibration();
-
+    Serial.begin(115200);
 
 
     
@@ -23,23 +18,25 @@ void loop() {
 
     sig_vol = readSignal();
 
-    Serial.println();
+    Serial.println(sig_vol[0]);
+    Serial.println(sig_vol[1]);
+    
 
-
+    if (digitalRead(2)) {
+        offset();
+    }
 }
 
 
 
 // ================== Functions ==================
 
-int map_a(float x, float in_min, float in_max, float out_min, float out_max) {
-
-    return (int)((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
-
+float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 
-int *readSignal() {
+int *readSignal() {                                                 //? DONE
     int *vals;
 
     vals[0] = analogRead(A0);
@@ -48,17 +45,17 @@ int *readSignal() {
     return vals;
 }
 
-void offset() {
+void offset() {                                                     // TODO: Need to finish
     int *vals = readSignal();     // 0 to 1024
 
     float voltage[2] = {
-        (float)vals[0] / 1024.0 * 5.0, 
-        (float)vals[1] / 1024.0 * 5.0
+        mapf((float)vals[0], 0, 1023, 0, 5), 
+        mapf((float)vals[1], 0, 1023, 0, 5) 
     };       // 0 to 5
 
 
     // initialise offsets
-    float offSetX_volt = 0;
+    float offSetX_volt = 0; 
     float offSetY_volt = 0;
 
 
