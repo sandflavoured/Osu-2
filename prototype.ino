@@ -5,23 +5,17 @@ int *sig_vol;
 // ================== Setup ==================
 
 void setup() {
-
-    Serial.begin(115200);
-
-
-    
+    Serial.begin(115200);    
 }
 
 // ================== Loop ==================
 
 void loop() {
-
     sig_vol = readSignal();
 
     Serial.println(sig_vol[0]);
     Serial.println(sig_vol[1]);
     
-
     if (digitalRead(2)) {
         offset();
     }
@@ -61,10 +55,10 @@ void offset() {                                                     // TODO: Nee
 
     // Set X offset
     if (voltage[0] >= 5) {
-        offSetX_volt = -4.0;
+        offSetX_volt += 4.0;
     }
     else if (voltage[0] <= 0) {
-        offSetX_volt = 4.0;
+        offSetX_volt -= 4.0;
     }
     else {
         offSetX_volt = 2.5 - voltage[0];
@@ -87,7 +81,5 @@ void offset() {                                                     // TODO: Nee
 
     analogWrite(10, offSetX_volt);
     analogWrite(10, offSetY_volt);
-
-
 
 }
