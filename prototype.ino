@@ -1,11 +1,15 @@
 
 // Global definitions
-int *sig_vol;
+int *sig_vol = NULL;
 
 // ================== Setup ==================
 
 void setup() {
     Serial.begin(115200);    
+    
+    Serial.print("Offsetting..........");
+    offset();
+    Serial.println("Done")
 }
 
 // ================== Loop ==================
@@ -13,7 +17,8 @@ void setup() {
 void loop() {
     sig_vol = readSignal();
 
-    Serial.println(sig_vol[0]);
+    Serial.print(sig_vol[0]);
+    Serial.print(',');
     Serial.println(sig_vol[1]);
     
     if (digitalRead(2)) {
@@ -39,12 +44,12 @@ int *readSignal() {                                                 //? DONE
     return vals;
 }
 
-void offset() {                                                     // TODO: Need to finish
+void offset() {                                                     // ! Need to check
     int *vals = readSignal();     // 0 to 1024
 
     float voltage[2] = {
-        mapf((float)vals[0], 0, 1023, 0, 5), 
-        mapf((float)vals[1], 0, 1023, 0, 5) 
+        mapf((float)vals[0], 0.0, 1023.0, 0.0, 5.0), 
+        mapf((float)vals[1], 0.0, 1023.0, 0.0, 5.0) 
     };       // 0 to 5
 
 
@@ -52,34 +57,47 @@ void offset() {                                                     // TODO: Nee
     float offSetX_volt = 0; 
     float offSetY_volt = 0;
 
+    while (voltage[0] > 2.51 || voltage[0] < 2.49 || voltage[1] > 2.51 || voltage[1] < 2.49) {
+        // Set X offset
+        if (voltage[0] >= 5) {
+            offSetX_volt += 4.0;
+        }
+        else if (voltage[0] <= 0) {
+            offSetX_volt -= 4.0;
+        }
+        else {
+            offSetX_volt = 2.5 - voltage[0];
+        }
 
-    // Set X offset
-    if (voltage[0] >= 5) {
-        offSetX_volt += 4.0;
+
+        // Set Y offset
+        if (voltage[1] >= 5) {
+            offSetY_volt = -4.0;
+        }
+        else if (voltage[1] <= 0) {
+            offSetY_volt = 4.0;
+        }
+        else {
+            offSetY_volt -= 2.5 - voltage[1];
+        }
+
+
+        int offSetX = mapf(offSetX_volt, 0.0, 5.0, 0.0, 255.0);
+        int offSetY = mapf(offSetY_volt, 0.0, 5.0, 0.0, 255.0);
+
+        analogWrite(10, offSetX);
+        analogWrite(11, offSetY);
+
+        // Serial.print("X Offset: ");
+        // Serial.println(offSetX_volt);
+        // Serial.print("Y Offset: ");
+        // Serial.println(offSetY_volt);
+        
+
+
+        vals = readSignal();     // 0 to 1024
+
+        voltage[0] = mapf((float)vals[0], 0.0, 1023.0, 0.0, 5.0);       
+        voltage[1] = mapf((float)vals[1], 0.0, 1023.0, 0.0, 5.0);
     }
-    else if (voltage[0] <= 0) {
-        offSetX_volt -= 4.0;
-    }
-    else {
-        offSetX_volt = 2.5 - voltage[0];
-    }
-
-
-    // Set Y offset
-    if (voltage[1] >= 5) {
-        offSetY_volt = -4.0;
-    }
-    else if (voltage[1] <= 0) {
-        offSetY_volt = 4.0;
-    }
-    else {
-        offSetY_volt = 2.5 - voltage[1];
-    }
-
-
-    int offSetX = map(offSetX_volt, 0, 5, 0, 255);
-
-    analogWrite(10, offSetX_volt);
-    analogWrite(10, offSetY_volt);
-
 }
